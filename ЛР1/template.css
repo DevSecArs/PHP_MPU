@@ -1,0 +1,115 @@
+/* Сброс базовых отступов, чтобы футер идеально прилегал к верху */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Основной фон страницы — нейтральный, чтобы выделить футер и контент.
+           Можно сделать светлым или с легким паттерном, но условие: футер темно-зеленый, 
+           буквы белые, приклеен к верху, фиксированной высоты, игнорирует скролл */
+body {
+  background: #eef2f0; /* Спокойный серо-зеленоватый фон, чтобы визуально отделить футер */
+  font-family: system-ui, "Segoe UI", "Roboto", "Helvetica Neue", sans-serif;
+  /* Убираем стандартные отступы body, которые могли бы создать просвет сверху */
+  margin: 0;
+  padding: 0;
+  /* Чтобы контент страницы начинался сразу под футером, 
+               так как футер зафиксирован вверху и перекрывает верхнюю часть основного содержимого.
+               Добавим верхний padding, равный высоте футера, чтобы содержимое не "пряталось" под ним.
+               Это стандартная практика для fixed-элементов, приклеенных к верху. */
+  padding-top: 70px; /* Значение равно фиксированной высоте футера (см. .top-footer) */
+}
+
+/* ----- ФУТЕР (но приклеен к ВЕРХУ! соответствует условию "футер приклеен к верху страницы") ----- */
+/* Класс .top-footer используется, чтобы подчеркнуть нестандартное расположение вверху, 
+           но по заданию это футер, который находится вверху страницы */
+
+
+.social-icon {
+  background: rgba(255, 255, 255, 0.15);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  cursor: default; /* чтобы не было лишнего указателя, но можно оставить для примера */
+}
+.social-icon:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+/* Для контента-заглушки — демонстрация скролла и того, что футер не реагирует на скролл и всегда вверху */
+.content-area {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 24px 60px 24px;
+  background: white;
+  border-radius: 28px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* Стилизация демо-контента */
+h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #1e2f2a;
+  border-left: 5px solid #0a2f1f;
+  padding-left: 20px;
+}
+h2 {
+  margin: 1.5rem 0 0.8rem 0;
+  color: #1a3a2c;
+}
+p {
+  line-height: 1.5;
+  margin-bottom: 1rem;
+  color: #2c3e32;
+}
+.card-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin: 32px 0;
+}
+.card {
+  background: #f9fbf9;
+  border-radius: 20px;
+  padding: 20px;
+  flex: 1 1 250px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+  border: 1px solid #e0e8e2;
+}
+.card h3 {
+  margin-top: 0;
+  color: #0a2f1f;
+}
+hr {
+  margin: 30px 0;
+  border: none;
+  height: 2px;
+  background: linear-gradient(to right, #cbdcd2, transparent);
+}
+.badge {
+  background: #0a2f1f10;
+  padding: 6px 14px;
+  border-radius: 60px;
+  font-size: 0.8rem;
+  color: #0a2f1f;
+  font-weight: 500;
+  display: inline-block;
+}
+
+/* для очень узких экранов прячем часть текста, но всё равно футер фиксирован */
+@media (max-width: 550px) {
+  .footer-nav a:last-child {
+    display: none;
+  }
+  .footer-right .text-copyright {
+    display: none;
+  }
+  .footer-brand span:first-child {
+    font-size: 1.3rem;
+  }
+}
