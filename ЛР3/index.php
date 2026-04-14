@@ -13,7 +13,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action'])) {
 
   if ($action === 'reset') {
     $_SESSION['result'] = '';
-    $_SESSION['total_clicks'] = 0;
   } elseif (is_numeric($action) && strlen($action) === 1 && $action >= 0 && $action <= 9) {
     $_SESSION['result'] .= $action;
     $_SESSION['total_clicks']++;
