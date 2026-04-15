@@ -36,7 +36,7 @@ $total_clicks = $_SESSION['total_clicks'];
 </head>
 
 <body>
-  <header><img src="./logo.png" alt="" width="90"></header>
+  <header><img src="./logo.png" alt="" width="90"><span>Агаев Арслан 241-353 ЛР-2 Вариант 1</span></header>
   <main>
     <div class="calculator-container">
       <!-- Result display window -->
