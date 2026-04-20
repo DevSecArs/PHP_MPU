@@ -5,27 +5,15 @@
   box-sizing: border-box;
 }
 
-/* Основной фон страницы — нейтральный, чтобы выделить футер и контент.
-           Можно сделать светлым или с легким паттерном, но условие: футер темно-зеленый, 
-           буквы белые, приклеен к верху, фиксированной высоты, игнорирует скролл */
 body {
   background: #eef2f0;
-  /* Спокойный серо-зеленоватый фон, чтобы визуально отделить футер */
   font-family: system-ui, "Segoe UI", "Roboto", "Helvetica Neue", sans-serif;
-  /* Убираем стандартные отступы body, которые могли бы создать просвет сверху */
   margin: 0;
   padding: 0;
-  /* Чтобы контент страницы начинался сразу под футером, 
-               так как футер зафиксирован вверху и перекрывает верхнюю часть основного содержимого.
-               Добавим верхний padding, равный высоте футера, чтобы содержимое не "пряталось" под ним.
-               Это стандартная практика для fixed-элементов, приклеенных к верху. */
   padding-top: 100px;
-  /* Значение равно фиксированной высоте футера (см. .top-footer) */
 }
 
 /* Header */
-/* Стили для навигации */
-
 header {
   border-bottom: 1px solid black;
   background-color: #0a2f1f;
@@ -38,6 +26,7 @@ header {
   top: 0;
   left: 0;
   padding: 5px 10px;
+  z-index: 1001;
 }
 
 header div {
@@ -75,6 +64,7 @@ header a {
 header a {
   color: rgba(255, 255, 255, 0.81);
   font-weight: bold;
+  text-decoration: none;
 }
 
 header a:hover {
@@ -85,10 +75,7 @@ header a.active {
   color: orangered;
 }
 
-/* ----- ФУТЕР (но приклеен к ВЕРХУ! соответствует условию "футер приклеен к верху страницы") ----- */
-/* Класс .top-footer используется, чтобы подчеркнуть нестандартное расположение вверху, 
-           но по заданию это футер, который находится вверху страницы */
-/* Те же стили, что выше */
+/* Footer */
 footer {
   position: fixed;
   bottom: 0;
@@ -108,65 +95,141 @@ footer {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Стилизация демо-контента */
-h1 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
-  color: #1e2f2a;
-  border-left: 5px solid #0a2f1f;
-  padding-left: 20px;
-}
-
-h2 {
-  margin: 1.5rem 0 0.8rem 0;
-  color: #1a3a2c;
-}
-
-p {
-  line-height: 1.5;
-  margin-bottom: 1rem;
-  color: #2c3e32;
-}
-
-.card-grid {
+/* Main content */
+main {
   display: flex;
-  flex-wrap: wrap;
-  gap: 24px;
-  margin: 32px 0;
+  min-height: calc(100vh - 170px);
+  padding: 20px 0px 80px 0px;
 }
 
-.card {
-  background: #f9fbf9;
-  border-radius: 20px;
-  padding: 20px;
-  flex: 1 1 250px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
-  border: 1px solid #e0e8e2;
+/* Левое меню */
+.menu {
+  width: 200px;
+  background: #f0f5f2;
+  padding: 20px 0;
+  border-right: 1px solid #c0d5cb;
+  position: fixed;
+  left: 0;
+  top: 110px;
+  bottom: 70px;
+  overflow-y: auto;
 }
 
-.card h3 {
-  margin-top: 0;
+.menu h3 {
+  padding: 0 20px 15px;
   color: #0a2f1f;
+  border-bottom: 1px solid #b8cec2;
+  margin-bottom: 15px;
 }
 
-hr {
-  margin: 30px 0;
-  border: none;
-  height: 2px;
-  background: linear-gradient(to right, #cbdcd2, transparent);
-}
-
-.badge {
-  background: #0a2f1f10;
-  padding: 6px 14px;
-  border-radius: 60px;
-  font-size: 0.8rem;
-  color: #0a2f1f;
+.menu a {
+  display: block;
+  padding: 10px 20px;
+  color: #1e3a2a;
+  text-decoration: none;
+  font-size: 18px;
   font-weight: 500;
-  display: inline-block;
+  transition: all 0.2s;
 }
 
-/* для очень узких экранов прячем часть текста, но всё равно футер фиксирован */
+.menu a:hover {
+  background: #d0e0d8;
+  color: #0a2f1f;
+}
+
+.menu a.active {
+  background: #0a2f1f;
+  color: white;
+  border-left: 4px solid orangered;
+}
+
+/* Таблица умножения */
+.multiplication_table {
+  flex: 1;
+  margin-left: 200px;
+  padding: 20px;
+  text-align: center;
+}
+
+.multiplication_table h2 {
+  margin-bottom: 30px;
+  color: #0a2f1f;
+  font-size: 28px;
+}
+
+/* Табличная верстка */
+.mult-table {
+  margin: 0 auto;
+  border-collapse: collapse;
+  background: white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.mult-table td {
+  padding: 12px 20px;
+  border: 1px solid #d0e0d8;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.mult-table a {
+  color: #0a2f1f;
+  text-decoration: none;
+  font-weight: bold;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.mult-table a:hover {
+  background: #0a2f1f;
+  color: white;
+}
+
+/* Блочная верстка */
+.block-table {
+  display: inline-block;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.block-row {
+  display: flex;
+}
+
+.block-cell {
+  padding: 12px 20px;
+  border: 1px solid #d0e0d8;
+  font-size: 16px;
+  font-weight: 500;
+  background: white;
+  width: 100%;
+  margin: 5px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.block-cell.large {
+  font-size: 20px;
+  padding: 15px 30px;
+}
+
+.block-table a {
+  color: #0a2f1f;
+  text-decoration: none;
+  font-weight: bold;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.block-table a:hover {
+  background: #0a2f1f;
+  color: white;
+}
+
+/* Адаптивность */
 @media (max-width: 850px) {
   header {
     height: auto;
@@ -189,9 +252,23 @@ hr {
   }
 }
 
+@media (max-width: 768px) {
+  .menu {
+    width: 150px;
+  }
+
+  .multiplication_table {
+    margin-left: 150px;
+  }
+
+  .mult-table td,
+  .block-cell {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+}
+
 @media (max-width: 550px) {
-
-
   .footer-nav a:last-child {
     display: none;
   }
@@ -203,9 +280,17 @@ hr {
   .footer-brand span:first-child {
     font-size: 1.3rem;
   }
-}
 
-main {
-  text-align: center;
-  padding: 20px 0px 80px 0px;
+  .menu {
+    width: 120px;
+  }
+
+  .multiplication_table {
+    margin-left: 120px;
+  }
+
+  footer {
+    font-size: 12px;
+    padding: 0 10px;
+  }
 }
