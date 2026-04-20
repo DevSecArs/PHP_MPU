@@ -78,7 +78,7 @@ function display_tables($tables, $cols_number)
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Агаев Арслан 241-353 ЛР-2 Вариант 1</title>
+  <title>Агаев Арслан 241-353 ЛР-4 Вариант 1</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 
