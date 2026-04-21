@@ -83,7 +83,7 @@ function display_tables($tables, $cols_number)
 </head>
 
 <body>
-  <header><img src="./logo.png" alt="" width="90"><span>Агаев Арслан 241-353 ЛР-2 Вариант 1</span></header>
+  <header><img src="./logo.png" alt="" width="90"><span>Агаев Арслан 241-353 ЛР-4 Вариант 1</span></header>
   <main>
     <?php echo display_tables($tables, $cols_number); ?>
   </main>
