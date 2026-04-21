@@ -236,13 +236,14 @@ $tracker = new SortTracker();
                                     if ($arr[$j] < $arr[$minIdx]) {
                                         $minIdx = $j;
                                     }
+                                    $tracker->nextIteration();
                                 }
                                 if ($minIdx != $i) {
                                     $temp = $arr[$i];
                                     $arr[$i] = $arr[$minIdx];
                                     $arr[$minIdx] = $temp;
                                 }
-                                $tracker->nextIteration("минимум помещён на позицию $i");
+                                $tracker->nextIteration();
                             }
                             break;
 
@@ -257,8 +258,9 @@ $tracker = new SortTracker();
                                         $arr[$j + 1] = $temp;
                                         $swapped = true;
                                     }
+                                    $tracker->nextIteration();
                                 }
-                                $tracker->nextIteration("проход " . ($i + 1));
+                                $tracker->nextIteration();
                                 if (!$swapped) break;
                             }
                             break;
@@ -273,11 +275,13 @@ $tracker = new SortTracker();
                                     while ($j >= $gap && $arr[$j - $gap] > $temp) {
                                         $arr[$j] = $arr[$j - $gap];
                                         $j -= $gap;
+                                        $tracker->nextIteration();
                                     }
                                     $arr[$j] = $temp;
+                                    $tracker->nextIteration();
                                 }
-                                $tracker->nextIteration("шаг = $gap");
                                 $gap = floor($gap / 2);
+                                $tracker->nextIteration();
                             }
                             break;
 
@@ -299,12 +303,12 @@ $tracker = new SortTracker();
                                         $j++;
                                     }
                                 }
-                                $tracker->nextIteration("текущий индекс: $i");
+                                $tracker->nextIteration();
                             }
                             break;
 
                         case 'quick':
-                            // Быстрая сортировка (рекурсивная, но итерации будем считать через замыкание)
+                            // Быстрая сортировка (рекурсивная)
                             $quickSort = function (&$arr, $low, $high) use (&$quickSort, $tracker) {
                                 if ($low < $high) {
                                     $pivot = $arr[$high];
@@ -316,13 +320,14 @@ $tracker = new SortTracker();
                                             $arr[$i] = $arr[$j];
                                             $arr[$j] = $temp;
                                         }
+                                        $tracker->nextIteration();
                                     }
                                     $temp = $arr[$i + 1];
                                     $arr[$i + 1] = $arr[$high];
                                     $arr[$high] = $temp;
                                     $pi = $i + 1;
 
-                                    $tracker->nextIteration("опорный элемент на позиции $pi");
+                                    $tracker->nextIteration();
 
                                     $quickSort($arr, $low, $pi - 1);
                                     $quickSort($arr, $pi + 1, $high);
