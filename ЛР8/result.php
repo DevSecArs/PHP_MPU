@@ -128,7 +128,6 @@ ob_start();
 
                 // Почему то ему буква В не нравится
                 if (is_separator($char) && iconv('CP1251', 'UTF-8//TRANSLIT//IGNORE', $char) != 'в') {
-                    echo $i . ' = ' . iconv('CP1251', 'UTF-8//TRANSLIT//IGNORE', $char);
                     if ($current_word !== '') {
                         $words[] = $current_word;
                         $current_word = '';
@@ -159,24 +158,24 @@ ob_start();
             // Проходим по каждому символу
             for ($i = 0; $i < $total_chars; $i++) {
                 $char = $text[$i];
+                $char_utf8 = iconv('CP1251', 'UTF-8//TRANSLIT//IGNORE', $text[$i]);
 
                 // Подсчёт типов символов
-                if (is_letter($char)) {
+                if (is_letter($char_utf8)) {
                     $letter_count++;
-                    if (is_lowercase($char)) {
+                    if (is_lowercase($char_utf8)) {
                         $lower_count++;
-                    } elseif (is_uppercase($char)) {
+                    } elseif (is_uppercase($char_utf8)) {
                         $upper_count++;
                     }
-                } elseif (is_punctuation($char)) {
+                } elseif (is_punctuation($char_utf8)) {
                     $punct_count++;
-                } elseif (is_digit($char)) {
+                } elseif (is_digit($char_utf8)) {
                     $digit_count++;
                 }
 
                 // Частота символов (без учёта регистра)
                 $lower_char = to_lower_by_code($char);
-
                 if (isset($char_freq[$lower_char])) {
                     $char_freq[$lower_char]++;
                 } else {
