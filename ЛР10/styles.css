@@ -1,0 +1,90 @@
+/* Сброс базовых отступов */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #eef2f0;
+  font-family: system-ui, "Segoe UI", "Roboto", "Helvetica Neue", sans-serif;
+  margin: 0;
+  padding: 0;
+  padding-top: 110px;
+  /* Отступ для фиксированного header */
+  padding-bottom: 70px;
+  /* Отступ для фиксированного footer */
+}
+
+/* Header */
+header {
+  border-bottom: 1px solid black;
+  background-color: #0a2f1f;
+  color: white;
+  border-bottom-left-radius: 25px;
+  border-bottom-right-radius: 25px;
+  height: 110px;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 5px 10px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+}
+
+header span {
+  font-size: 18px;
+  font-style: italic;
+}
+
+header img {
+  margin-right: 40px;
+  width: 90px;
+}
+
+/* Footer - теперь внизу страницы */
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 70px;
+  background-color: #0a2f1f;
+  border-top: 1px solid black;
+  border-top-left-radius: 25px;
+  border-top-right-radius: 25px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 32px;
+  z-index: 1000;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Стилизация контента */
+h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #1e2f2a;
+  padding-left: 20px;
+}
+
+h2 {
+  margin: 1.5rem 0 0.8rem 0;
+  color: #1a3a2c;
+}
+
+p {
+  line-height: 1.5;
+  margin-bottom: 1rem;
+  color: #2c3e32;
+}
+
+main {
+  text-align: center;
+  padding: 20px 20px 80px 20px;
+  min-height: calc(100vh - 180px);
+}
