@@ -14,47 +14,6 @@ $result = '';
 $error = '';
 $expression = '';
 
-// Проверка, является ли строка числом (без использования готовых функций)
-function isnum($x)
-{
-  // Проверяем, не пустая ли строка
-  if (strlen($x) == 0) return false;
-
-  // Если передано не строковое значение, а число — сразу возвращаем true
-  // (результаты вычислений в PHP могут быть int или float)
-  if (is_int($x) || is_float($x)) return true;
-
-  // Проверяем отрицательные числа
-  $start = 0;
-  if ($x[0] == '-') {
-    if (strlen($x) == 1) return false; // просто минус — не число
-    $start = 1;
-  }
-
-  // Число не может начинаться с точки
-  if ($x[$start] == '.' && ($start == 0 || $start == 1)) return false;
-
-  // Число не может заканчиваться точкой
-  if ($x[strlen($x) - 1] == '.') return false;
-
-  $point_count = false;
-  for ($i = $start; $i < strlen($x); $i++) {
-    $char = $x[$i];
-    if (
-      $char != '0' && $char != '1' && $char != '2' && $char != '3' &&
-      $char != '4' && $char != '5' && $char != '6' && $char != '7' &&
-      $char != '8' && $char != '9' && $char != '.'
-    ) {
-      return false;
-    }
-    if ($char == '.') {
-      if ($point_count) return false;
-      $point_count = true;
-    }
-  }
-  return true;
-}
-
 // Ручное разбиение строки по разделителю (аналог explode)
 function manualExplode($delimiter, $string)
 {
@@ -94,78 +53,49 @@ function manualSubstr($string, $start, $length = null)
   return $result;
 }
 
-// Вычисление выражения без скобок
-function calculate($val)
+// Проверка, является ли строка числом
+function isNumberString($x)
 {
-  if (strlen($val) == 0) return 'Выражение не задано!';
+  if (strlen($x) == 0) return false;
 
-  // Заменяем двоеточие на слеш для деления
-  $new_val = '';
-  for ($i = 0; $i < strlen($val); $i++) {
-    if ($val[$i] == ':') {
-      $new_val .= '/';
-    } else {
-      $new_val .= $val[$i];
-    }
-  }
-  $val = $new_val;
-
-  if (isnum($val)) return $val;
-
-  // Обработка сложения (самый низкий приоритет)
-  $args = manualExplode('+', $val);
-  if (count($args) > 1) {
-    $sum = 0;
-    for ($i = 0; $i < count($args); $i++) {
-      $arg = calculate($args[$i]);
-      if (!isnum($arg)) return $arg;
-      $sum += $arg;
-    }
-    return $sum;
+  $start = 0;
+  // Разрешаем минус в начале
+  if ($x[0] == '-') {
+    if (strlen($x) == 1) return false;
+    $start = 1;
   }
 
-  // Обработка вычитания
-  $args = manualExplode('-', $val);
-  if (count($args) > 1) {
-    $arg = calculate($args[0]);
-    if (!isnum($arg)) return $arg;
-    $sub = $arg;
-    for ($i = 1; $i < count($args); $i++) {
-      $arg = calculate($args[$i]);
-      if (!isnum($arg)) return $arg;
-      $sub -= $arg;
+  // Проверка на пустую строку после минуса
+  if ($start >= strlen($x)) return false;
+
+  // Проверка, что после минуса не идёт точка
+  if ($x[$start] == '.' && $start == strlen($x) - 1) return false;
+
+  // Число не может заканчиваться точкой
+  if ($x[strlen($x) - 1] == '.') return false;
+
+  $point_count = false;
+  $has_digit = false;
+
+  for ($i = $start; $i < strlen($x); $i++) {
+    $char = $x[$i];
+    if (
+      $char == '0' || $char == '1' || $char == '2' || $char == '3' ||
+      $char == '4' || $char == '5' || $char == '6' || $char == '7' ||
+      $char == '8' || $char == '9'
+    ) {
+      $has_digit = true;
+      continue;
     }
-    return $sub;
+    if ($char == '.') {
+      if ($point_count) return false;
+      $point_count = true;
+      continue;
+    }
+    return false;
   }
 
-  // Обработка умножения
-  $args = manualExplode('*', $val);
-  if (count($args) > 1) {
-    $sup = 1;
-    for ($i = 0; $i < count($args); $i++) {
-      $arg = calculate($args[$i]);
-      if (!isnum($arg)) return $arg;
-      $sup *= $arg;
-    }
-    return $sup;
-  }
-
-  // Обработка деления
-  $args = manualExplode('/', $val);
-  if (count($args) > 1) {
-    $arg = calculate($args[0]);
-    if (!isnum($arg)) return $arg;
-    $div = $arg;
-    for ($i = 1; $i < count($args); $i++) {
-      $arg = calculate($args[$i]);
-      if (!isnum($arg)) return $arg;
-      if ($arg == 0) return 'Деление на ноль!';
-      $div /= $arg;
-    }
-    return $div;
-  }
-
-  return 'Недопустимые символы в выражении';
+  return $has_digit;
 }
 
 // Проверка корректности расстановки скобок
@@ -186,14 +116,26 @@ function SqValidator($val)
 // Вычисление выражения со скобками
 function calculateSq($val)
 {
+  // Удаляем пробелы
+  $clean_val = '';
+  for ($i = 0; $i < strlen($val); $i++) {
+    if ($val[$i] != ' ') {
+      $clean_val .= $val[$i];
+    }
+  }
+  $val = $clean_val;
+
+  if (strlen($val) == 0) return 'Выражение не задано!';
+
   if (!SqValidator($val)) return 'Неправильная расстановка скобок';
 
+  // Ищем первую открывающую скобку
   $start = manualStrpos($val, '(');
   if ($start === false) {
     return calculate($val);
   }
 
-  // Ищем соответствующую закрывающуюся скобку
+  // Ищем соответствующую закрывающую скобку
   $end = $start + 1;
   $open = 1;
   while ($open && $end < strlen($val)) {
@@ -204,21 +146,142 @@ function calculateSq($val)
 
   // Формируем новое выражение
   $new_val = manualSubstr($val, 0, $start); // часть левее скобок
-  $new_val .= calculateSq(manualSubstr($val, $start + 1, $end - $start - 2)); // выражение в скобках
+  $inner_expr = manualSubstr($val, $start + 1, $end - $start - 2); // выражение внутри скобок
+  $inner_result = calculateSq($inner_expr);
+
+  // Если результат внутри скобок — ошибка, возвращаем её
+  if (!isNumberString($inner_result)) return $inner_result;
+
+  $new_val .= $inner_result;
   $new_val .= manualSubstr($val, $end); // часть правее скобок
 
   return calculateSq($new_val);
+}
+
+// Вычисление выражения без скобок
+function calculate($val)
+{
+  if (strlen($val) == 0) return 'Выражение не задано!';
+
+  if (isNumberString($val)) return $val;
+
+  // Заменяем двоеточие на слеш
+  $new_val = '';
+  for ($i = 0; $i < strlen($val); $i++) {
+    $new_val .= ($val[$i] == ':') ? '/' : $val[$i];
+  }
+  $val = $new_val;
+
+  // Обработка сложения
+  $args = splitByOperator($val, '+');
+  if (count($args) > 1) {
+    $sum = 0;
+    for ($i = 0; $i < count($args); $i++) {
+      $arg = calculate($args[$i]);
+      if (!isNumberString($arg)) return $arg;
+      $sum += (float)$arg;
+    }
+    return numberToString($sum);
+  }
+
+  // Обработка вычитания
+  $args = splitByOperator($val, '-');
+  if (count($args) > 1) {
+    $arg = calculate($args[0]);
+    if (!isNumberString($arg)) return $arg;
+    $sub = (float)$arg;
+    for ($i = 1; $i < count($args); $i++) {
+      $arg = calculate($args[$i]);
+      if (!isNumberString($arg)) return $arg;
+      $sub -= (float)$arg;
+    }
+    return numberToString($sub);
+  }
+
+  // Обработка умножения
+  $args = splitByOperator($val, '*');
+  if (count($args) > 1) {
+    $sup = 1;
+    for ($i = 0; $i < count($args); $i++) {
+      $arg = calculate($args[$i]);
+      if (!isNumberString($arg)) return $arg;
+      $sup *= (float)$arg;
+    }
+    return numberToString($sup);
+  }
+
+  // Обработка деления
+  $args = splitByOperator($val, '/');
+  if (count($args) > 1) {
+    $arg = calculate($args[0]);
+    if (!isNumberString($arg)) return $arg;
+    $div = (float)$arg;
+    for ($i = 1; $i < count($args); $i++) {
+      $arg = calculate($args[$i]);
+      if (!isNumberString($arg)) return $arg;
+      if ((float)$arg == 0) return 'Деление на ноль!';
+      $div /= (float)$arg;
+    }
+    return numberToString($div);
+  }
+
+  return 'Недопустимые символы в выражении';
+}
+
+// Разбиение строки по оператору с учётом унарного минуса
+function splitByOperator($string, $operator)
+{
+  $result = [];
+  $current = '';
+
+  for ($i = 0; $i < strlen($string); $i++) {
+    $char = $string[$i];
+
+    if ($char == $operator) {
+      // Для минуса проверяем: если это не начало и предыдущий символ — оператор или начало строки с учётом минуса как унарного
+      if ($operator == '-') {
+        // Если current пустой — это унарный минус
+        if ($current == '') {
+          $current .= $char;
+          continue;
+        }
+        // Если current заканчивается на оператор — это тоже унарный минус
+        $last_char = $current[strlen($current) - 1];
+        if ($last_char == '+' || $last_char == '-' || $last_char == '*' || $last_char == '/' || $last_char == '(') {
+          $current .= $char;
+          continue;
+        }
+      }
+
+      // Это бинарный оператор — разбиваем
+      $result[] = $current;
+      $current = '';
+    } else {
+      $current .= $char;
+    }
+  }
+  $result[] = $current;
+  return $result;
+}
+
+// Преобразование числа в строку без лишних нулей
+function numberToString($num)
+{
+  // Если число целое
+  if ($num == (int)$num) {
+    return (string)(int)$num;
+  }
+  return (string)$num;
 }
 
 // Обработка POST-запроса
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['val'])) {
   $expression = trim($_POST['val']);
 
-  // Проверка на повторную отправку при обновлении страницы
   if (isset($_POST['iteration']) && $_POST['iteration'] + 1 == $_SESSION['iteration']) {
     $res = calculateSq($expression);
 
-    if (isnum($res)) {
+    if (isNumberString($res)) {
       $result = $res;
       $_SESSION['history'][] = $_POST['val'] . ' = ' . $res;
     } else {
@@ -251,7 +314,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['val'])) {
           type="text"
           name="val"
           value="<?php echo htmlspecialchars($expression); ?>"
-          placeholder="Введите выражение, например: 2 + 3 * (4 - 1)"
+          placeholder="Введите выражение, например: -3+24*(-3)"
           style="padding: 10px; font-size: 16px; width: 400px; max-width: 80vw; border: 2px solid #0a2f1f; border-radius: 8px;"
           required>
         <button
@@ -263,7 +326,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['val'])) {
     </form>
 
     <!-- Отображение результата или ошибки -->
-    <?php if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['val']) && $_POST['iteration'] + 1 == $_SESSION['iteration']): ?>
+    <?php if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['val']) && isset($_POST['iteration']) && $_POST['iteration'] + 1 == $_SESSION['iteration']): ?>
       <div style="margin: 20px 0; padding: 15px; background-color: <?php echo $error ? '#ffe6e6' : '#e6ffe6'; ?>; border-radius: 10px; max-width: 500px; margin-left: auto; margin-right: auto;">
         <h2 style="margin: 0; color: <?php echo $error ? '#cc0000' : '#006600'; ?>;">
           <?php if ($error): ?>
