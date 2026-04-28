@@ -1,4 +1,27 @@
 <?php
+
+function utf8_first_char($str)
+{
+    if (empty($str)) return '';
+
+    // Код первого байта определяет длину символа в UTF-8
+    $code = ord($str[0]);
+
+    if ($code < 0x80) {
+        // ASCII символ (1 байт)
+        return $str[0];
+    } elseif ($code < 0xE0) {
+        // 2-байтовый символ
+        return substr($str, 0, 2);
+    } elseif ($code < 0xF0) {
+        // 3-байтовый символ (кириллица в UTF-8)
+        return substr($str, 0, 3);
+    } else {
+        // 4-байтовый символ (эмодзи и т.д.)
+        return substr($str, 0, 4);
+    }
+}
+
 function getDeleteContent($pdo)
 {
     $message = '';
@@ -38,8 +61,8 @@ function getDeleteContent($pdo)
         $html .= '<ul class="contact-list">';
         foreach ($contacts as $contact) {
             // Формируем инициалы
-            $initials = $contact['firstname'] ? mb_substr($contact['firstname'], 0, 1) . '.' : '';
-            $initials .= $contact['middlename'] ? mb_substr($contact['middlename'], 0, 1) . '.' : '';
+            $initials = $contact['firstname'] ? utf8_first_char($contact['firstname']) . '.' : '';
+            $initials .= $contact['middlename'] ? utf8_first_char($contact['middlename']) . '.' : '';
 
             $full_name = $contact['lastname'] . ' ' . $initials;
 
